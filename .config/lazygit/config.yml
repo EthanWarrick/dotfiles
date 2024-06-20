@@ -1,0 +1,71 @@
+#################################################################################
+#                                                                               #
+#                          Lazygit Configuration File                           #
+#              Default file location: ~/.config/lazygit/config.yml              #
+#                                                                               #
+#    See https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md    #
+#                                                                               #
+#################################################################################
+
+gui:
+  nerdFontsVersion: "3" # nerd fonts version to use ("2" or "3"); empty means don't show nerd font icons
+  theme:
+    selectedLineBgColor:
+      - '#1a0d91'
+  skipRewordInEditorWarning: true # for skipping the confirmation before launching the reword editor
+
+git:
+  log:
+    # displays the whole git graph by default in the commits panel (equivalent to passing the `--all` argument to `git log`)
+    showWholeGraph: false
+
+keybinding:
+  commits:
+    moveDownCommit: '<c-d>' # move commit down one
+    moveUpCommit: '<c-u>' # move commit up one
+    openLogMenu: '<c-n>' # open log menu
+
+promptToReturnFromSubprocess: false # display confirmation when subprocess terminates
+
+customCommands:
+  - key: '<c-a>'
+    description: 'Create patch file for selected commit'
+    context: 'commits'
+    command: 'git format-patch -1 {{.SelectedLocalCommit.Sha}}'
+    stream: true
+  - key: '<c-a>'
+    description: 'Create patch file for selected commit'
+    context: 'subCommits'
+    command: 'git format-patch -1 {{.SelectedSubCommit.Sha}}'
+    stream: true
+  - key: '<c-p>'
+    description: 'Push stack from selected commit to Gerrit'
+    context: 'commits'
+    command: 'git push {{.CheckedOutBranch.UpstreamRemote}} {{.SelectedLocalCommit.Sha}}:refs/for/{{.CheckedOutBranch.UpstreamBranch}}{{if index .PromptResponses 1}}%{{index .PromptResponses 1}} && export LIST=$(lazygit -cd)/gerrit_history.log && grep -xvF "{{index .PromptResponses 1}}" $LIST > /tmp/gerrit_history.log && mv /tmp/gerrit_history.log $LIST && echo "{{index .PromptResponses 1}}" >> $LIST{{end}}'
+    stream: true
+    prompts:
+      - type: 'confirm'
+        title: "Confirm:"
+        body: "Are you sure you want to push to gerrit (refs/for/{{.CheckedOutBranch.UpstreamBranch}})?"
+      - type: 'input'
+        title: "Gerrit % Extra"
+        suggestions:
+          command: "touch $(lazygit -cd)/gerrit_history.log && tac $(lazygit -cd)/gerrit_history.log"
+  - key: '<c-x>'
+    description: 'Adds a Signed-off-by line to selected commit'
+    context: 'commits'
+    command: 'git commit --no-edit --signoff --fixup=reword:{{.SelectedLocalCommit.Sha}} && GIT_SEQUENCE_EDITOR="cat > /dev/null" git rebase --interactive --autostash --keep-empty --rebase-merges --autosquash {{.SelectedLocalCommit.Sha}}^'
+    stream: true
+  - key: '<c-/>'
+    description: 'Run Taskfile task'
+    context: global
+    prompts:
+      # - type: 'input'
+      #   title: "Available tasks"
+      #   suggestions:
+      #     command: "task --silent --list-all"
+      - type: 'menuFromCommand'
+        title: "Available tasks"
+        command: "task --silent --list-all"
+    command: '{{if index .PromptResponses 0 }}task {{index .PromptResponses 0 }}{{end}}'
+    showOutput: true
