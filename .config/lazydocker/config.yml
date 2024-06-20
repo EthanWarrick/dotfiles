@@ -1,0 +1,11 @@
+#################################################################################
+#                                                                               #
+#                         Lazydocker Configuration File                         #
+#             Default file location: ~/.config/lazydocker/config.yml            #
+#                                                                               #
+#   See https://github.com/jesseduffield/lazydocker/blob/master/docs/Config.md  #
+#                                                                               #
+#################################################################################
+
+gui:
+  returnImmediately: true
