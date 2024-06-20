@@ -1,0 +1,64 @@
+[core]
+	hooksPath = ~/.config/git/hooks
+	safecrlf = true
+	editor = nvim
+	pager = bat
+[init]
+	defaultBranch = master
+[clangFormat]
+	binary = /usr/local/bin/clang-format
+	extensions = c,cpp,h,hpp
+[user]
+	name = Ethan Warrick
+	; email = 
+[commit]
+	verbose = true
+[pull]
+	rebase = true
+[push]
+	default = upstream
+[color]
+	ui = true
+[diff]
+	tool = nvimdiff
+	guitool = bcompare
+[difftool]
+	prompt = false
+[difftool "bcompare"]
+	cmd = bcompare -solo \"$LOCAL\" \"$REMOTE\"
+[difftool "nvimdiff"]
+	cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+[merge]
+	tool = nvimdiff4
+	guitool = bcompare
+[mergetool "bcompare"]
+	cmd = "bcompare -solo \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\""
+[mergetool "nvimdiff4"]
+	cmd = "nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'"
+[alias]
+	parent = "!git show-branch | grep '*' | grep -v \"$(git rev-parse --abbrev-ref HEAD)\" | head -n1 | sed 's/.*\\[\\([^\\^~]*\\).*\\].*/\\1/'"
+	root = "rev-parse --show-toplevel"
+
+[maintenance "commit-graph"]
+	enabled = true
+	schedule = hourly
+[maintenance "prefetch"]
+	enabled = true
+	schedule = hourly
+[maintenance "gc"]
+	enabled = true
+	schedule = daily
+[maintenance "loose-objects"]
+	enabled = false
+	schedule = daily
+[maintenance "incremental-repack"]
+	enabled = false
+	schedule = daily
+[maintenance "pack-refs"]
+	enabled = false
+	schedule = weekly
+
+; Override config file for non-public git settings
+;   NOTE: This requires git version 1.7.10+
+[include]
+	path = ~/.gitconfig-private
