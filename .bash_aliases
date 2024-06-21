@@ -56,10 +56,17 @@ function nvims() {
   NVIM_APPNAME=$config nvim $@
 }
 
-if [ -f $HOME/.config/lazygit/private-config.yml ]; then
-  alias lazygit="LG_CONFIG_FILE=\"$HOME/.config/lazygit/config.yml,$HOME/.config/lazygit/private-config.yml\" lazygit"
-fi
-alias lzg="lazygit"
+function lzg() { 
+  config="$HOME/.config/lazygit/config.yml"
+  if [ -f $HOME/.config/lazygit/private-config.yml ]; then
+    config+=",$HOME/.config/lazygit/private-config.yml"
+  fi
+  if [ "$PWD" = "$HOME" ]; then
+    LG_CONFIG_FILE=$config lazygit --git-dir="$HOME/.dotfiles" --work-tree="$HOME" "$@"
+  else
+    LG_CONFIG_FILE=$config lazygit "$@"
+  fi
+}
 
 alias lzd="lazydocker"
 
