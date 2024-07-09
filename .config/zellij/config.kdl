@@ -143,10 +143,43 @@ keybinds clear-defaults=true {
     shared_except "locked" {
         bind "Alt g" { SwitchToMode "Locked"; }
         bind "Alt q" { Quit; }
-        bind "Alt h" "Alt Left" { MoveFocus "Left"; }
-        bind "Alt l" "Alt Right" { MoveFocus "Right"; }
-        bind "Alt j" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt k" "Alt Up" { MoveFocus "Up"; }
+        bind "Ctrl h" "Alt Left" {
+            MessagePlugin "navigator" {
+                name "move_focus";
+                payload "left";
+
+                // Plugin Configuration
+                move_mod "ctrl"; // Optional, should be added on every command if you want to use it
+                resize_mod "alt"; // Optional, should be added on every command if you want to use it
+            };
+        }
+        bind "Ctrl j" "Alt Down" {
+            MessagePlugin "navigator" {
+                name "move_focus";
+                payload "down";
+
+                move_mod "ctrl";
+                resize_mod "alt";
+            };
+        }
+        bind "Ctrl k" "Alt Up" {
+            MessagePlugin "navigator" {
+                name "move_focus";
+                payload "up";
+
+                move_mod "ctrl";
+                resize_mod "alt";
+            };
+        }
+        bind "Ctrl l" "Alt Right" {
+            MessagePlugin "navigator" {
+                name "move_focus";
+                payload "right";
+
+                move_mod "ctrl";
+                resize_mod "alt";
+            };
+        }
         bind "Alt =" "Alt +" { Resize "Increase"; }
         bind "Alt -" { Resize "Decrease"; }
         bind "Alt [" { PreviousSwapLayout; }
@@ -179,11 +212,18 @@ keybinds clear-defaults=true {
 }
 
 plugins {
-    tab-bar { path "tab-bar"; }
-    status-bar { path "status-bar"; }
-    strider { path "strider"; }
-    compact-bar { path "compact-bar"; }
-    session-manager { path "session-manager"; }
+    tab-bar location="zellij:tab-bar"
+    status-bar location="zellij:status-bar"
+    strider location="zellij:strider"
+    compact-bar location="zellij:compact-bar"
+    session-manager location="zellij:session-manager"
+    welcome-screen location="zellij:session-manager" {
+        welcome_screen true
+    }
+    filepicker location="zellij:strider" {
+        cwd "/"
+    }
+    navigator location="https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm"
 }
 
 // Choose what to do when zellij receives SIGTERM, SIGINT, SIGQUIT or SIGHUP
