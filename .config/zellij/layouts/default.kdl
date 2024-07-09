@@ -1,9 +1,50 @@
 layout {
-    pane size=1 borderless=true {
-        plugin location="zellij:compact-bar"
+    default_tab_template {
+        // the default zellij tab-bar and status bar plugins
+        pane size=1 borderless=true {
+            plugin location="zjstatus" {
+                format_left   "#[bold]Zellij (#[fg=#89B4FA,bold]{session}) {tabs}"
+                format_center ""
+                format_right  "{mode} | {datetime} "
+                format_space  ""
+
+                mode_normal        "#[fg=#89B4FA,bold]{name}"
+                mode_locked        "#[fg=#89B4FA,bold]{name}"
+                mode_resize        "#[fg=#89B4FA,bold]{name}"
+                mode_pane          "#[fg=#89B4FA,bold]{name}"
+                mode_tab           "#[fg=#89B4FA,bold]{name}"
+                mode_scroll        "#[fg=#89B4FA,bold]{name}"
+                mode_enter_search  "#[fg=#89B4FA,bold]{name}"
+                mode_search        "#[fg=#89B4FA,bold]{name}"
+                mode_rename_tab    "#[fg=#89B4FA,bold]{name}"
+                mode_rename_pane   "#[fg=#89B4FA,bold]{name}"
+                mode_session       "#[fg=#89B4FA,bold]{name}"
+                mode_move          "#[fg=#89B4FA,bold]{name}"
+                mode_prompt        "#[fg=#89B4FA,bold]{name}"
+                mode_tmux          "#[fg=#ffc387,bold]{name}"
+
+                // formatting for inactive tabs
+                tab_normal              "#[fg=#6C7086] {index} {name} "
+
+                // formatting for the current active tab
+                tab_active              "#[fg=#9399B2,bold,underscore] {name} {floating_indicator}"
+                tab_active_fullscreen   "#[fg=#9399B2,bold,underscore] {name} {fullscreen_indicator} "
+                tab_active_sync         "#[fg=#9399B2,bold,underscore] {name} {sync_indicator} "
+
+                // indicators
+                tab_sync_indicator       "<>"
+                tab_fullscreen_indicator "[]"
+                tab_floating_indicator   "⬚ "
+
+                datetime        "#[fg=#6C7086,bold]{format}"
+                datetime_format "%A, %d %b %I:%M"
+                datetime_timezone "America/Chicago"
+            }
+        }
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
     }
-    pane
-    pane size=1 borderless=true {
-        plugin location="zellij:status-bar"
-    }
+    tab
 }
