@@ -61,4 +61,4 @@
 ; Override config file for non-public git settings
 ;   NOTE: This requires git version 1.7.10+
 [include]
-	path = ~/.gitconfig-private
+	path = config-private
