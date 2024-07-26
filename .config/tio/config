@@ -1,0 +1,21 @@
+##############################################
+# tio - a serial device I/O tool             #
+# See tio man page for configuration options #
+# https://github.com/tio/tio                 #
+##############################################
+
+[default]
+baudrate = 115200
+databits = 8
+parity = none
+stopbits = 1
+
+# [rpi3]
+# device = /dev/serial/by-id/usb-FTDI_TTL232R-3V3_FTGQVXBL-if00-port0
+# baudrate = 115200
+# color = 11
+#
+# [usb-devices]
+# pattern = ^usb([0-9]*)
+# device = /dev/ttyUSB%m1
+# baudrate = 115200
