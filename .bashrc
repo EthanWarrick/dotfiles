@@ -127,3 +127,7 @@ eval "$(atuin init bash --disable-up-arrow)"
 precmd_functions+=(_atuin_fix_echo)
 
 export TASK_X_MAP_VARIABLES=2
+
+# Git bash completion configuration
+export GIT_COMPLETION_SHOW_ALL_COMMANDS=1
+export GIT_COMPLETION_SHOW_ALL=1
