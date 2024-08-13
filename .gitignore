@@ -1,0 +1,2 @@
+# Avoid weird recursion problems by ignoring the repo's .git dir
+.dotfiles
