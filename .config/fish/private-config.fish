@@ -1,0 +1,10 @@
+#################################################################################
+#                                                                               #
+#  This is a private configuration file for fish-shell Any config in this file  #
+#    will only be saved locally and will not be pushed to the upstream repo.    #
+#                                                                               #
+#       Make sure to run `git update-index --skip-worktree` on this file        #
+#                   to prevent changes from being tracked.                      #
+#                                                                               #
+#################################################################################
+

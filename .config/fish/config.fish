@@ -8,3 +8,5 @@ if status is-interactive
   end
 
 end
+
+source $__fish_config_dir/private-config.fish
