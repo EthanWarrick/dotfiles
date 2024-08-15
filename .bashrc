@@ -117,14 +117,11 @@ fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
+# ------------------------ Atuin Setup ------------------------
+# Bash-Preexec is a Atuin dependency
 [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
-# setup Atuin (requires bash-preexec)
-_atuin_fix_echo() {
-    stty echo
-    stty sane
-}
 eval "$(atuin init bash --disable-up-arrow)"
-precmd_functions+=(_atuin_fix_echo)
+# -------------------------------------------------------------
 
 export TASK_X_MAP_VARIABLES=2
 
