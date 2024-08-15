@@ -27,14 +27,14 @@ layout {
                 tab_normal              "#[fg=#6C7086] {index} {name} "
 
                 // formatting for the current active tab
-                tab_active              "#[fg=#9399B2,bold,underscore] {name} {floating_indicator}"
-                tab_active_fullscreen   "#[fg=#9399B2,bold,underscore] {name} {fullscreen_indicator} "
-                tab_active_sync         "#[fg=#9399B2,bold,underscore] {name} {sync_indicator} "
+                tab_active              "#[fg=#9399B2,bold,underscore] {index} {name} {floating_indicator} "
+                tab_active_fullscreen   "#[fg=#9399B2,bold,underscore] {index} {name} {fullscreen_indicator} "
+                tab_active_sync         "#[fg=#9399B2,bold,underscore] {index} {name} {sync_indicator} "
 
                 // indicators
                 tab_sync_indicator       "<>"
                 tab_fullscreen_indicator "[]"
-                tab_floating_indicator   "⬚ "
+                tab_floating_indicator   "⬚"
 
                 datetime        "#[fg=#6C7086,bold]{format}"
                 datetime_format "%A, %d %b %I:%M"
