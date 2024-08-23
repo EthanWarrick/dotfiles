@@ -100,8 +100,8 @@ if [ -e ~/.bash_aliases ]; then
 fi
 
 # Private bash configurations in a separate file.
-if [ -f ~/.bash-private ]; then
-    . ~/.bash-private
+if [ -f ~/.bash_private ]; then
+    . ~/.bash_private
 fi
 
 # enable programmable completion features (you don't need to enable
