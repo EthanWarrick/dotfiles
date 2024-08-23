@@ -12,4 +12,6 @@ if status is-interactive
   # Starship prompt setup
   command --query starship && starship init fish | source
 
+  set -U fish_greeting # Remove fish welcome message
+
 end
