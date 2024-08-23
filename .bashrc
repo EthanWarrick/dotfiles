@@ -115,12 +115,18 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# ------------------------- Fzf Setup -------------------------
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# -------------------------------------------------------------
 
 # ------------------------ Atuin Setup ------------------------
 # Bash-Preexec is a Atuin dependency
 [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
 eval "$(atuin init bash --disable-up-arrow)"
+# -------------------------------------------------------------
+
+# ---------------------- Starship Setup -----------------------
+command -v starship &> /dev/null && eval "$(starship init bash)"
 # -------------------------------------------------------------
 
 export TASK_X_MAP_VARIABLES=2

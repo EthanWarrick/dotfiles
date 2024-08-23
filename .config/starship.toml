@@ -1,0 +1,108 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+$username\
+$directory\
+$git_branch\
+$git_state\
+$status\
+$fill\
+$hostname\
+$shell\
+$line_break\
+$character"""
+
+# Inserts a blank line between shell prompts
+add_newline = false
+
+[character]
+success_symbol = '[➜](bold green)'
+error_symbol = '[➜](bold red)'
+
+[directory]
+truncation_length = 10
+truncation_symbol = '…/'
+truncate_to_repo = false
+format = '[$path]($style) '
+style = 'bold blue'
+
+# Used to alighn modules to the right
+[fill]
+symbol = ' '
+
+[git_branch]
+format = '[\($branch(:$remote_branch)\)]($style) '
+style = 'bold purple'
+
+[hostname]
+format = '[\[$hostname\]]($style) '
+ssh_only = true
+
+[os.symbols]
+# AIX = ""
+# Alpaquita = ""
+AlmaLinux = " "
+Alpine = " "
+Amazon = " "
+Android = " "
+Arch = "󰣇 "
+Artix = " "
+CentOS = " "
+Debian = " "
+# DragonFly = ""
+# Emscripten = ""
+EndeavourOS = " "
+Fedora = " "
+FreeBSD = " "
+Garuda = " "
+Gentoo = " "
+# HardenedBSD = ""
+Illumos = " "
+Kali = " "
+Linux = " "
+# Mabox = ""
+Macos = " "
+Manjaro = " "
+# Mariner = ""
+# MidnightBSD = ""
+Mint = "󰣭 "
+# NetBSD = ""
+NixOS = " "
+OpenBSD = " "
+# OpenCloudOS = ""
+# openEuler = ""
+openSUSE = " "
+# OracleLinux = ""
+Pop = " "
+Raspbian = " "
+Redhat = " "
+RedHatEnterprise = " "
+RockyLinux = " "
+# Redox = ""
+Solus = " "
+SUSE = " "
+Ubuntu = " "
+# Ultramarine = ""
+Unknown = " "
+Void = "  "
+Windows = " "
+
+[shell]
+disabled = false
+bash_indicator = 'bash'
+fish_indicator = 'fish'
+format = '[ $indicator]($style) '
+style = 'dimmed bold yellow'
+
+[status]
+disabled = false
+pipestatus = true
+format = '[\[$status(:$common_meaning)\]]($style) '
+pipestatus_format = '[\[$pipestatus\]]($style)'
+pipestatus_segment_format = '[$status(:$common_meaning)]($style)'
+
+[username]
+format = '[$user]($style):'
+show_always = true
+style_user = 'bold green'

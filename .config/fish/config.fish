@@ -1,3 +1,5 @@
+source $__fish_config_dir/private-config.fish
+
 # Commands to run in interactive sessions can go here
 if status is-interactive
 
@@ -7,6 +9,7 @@ if status is-interactive
     fish -c "fisher update"
   end
 
-end
+  # Starship prompt setup
+  command --query starship && starship init fish | source
 
-source $__fish_config_dir/private-config.fish
+end
