@@ -120,9 +120,11 @@ fi
 # -------------------------------------------------------------
 
 # ------------------------ Atuin Setup ------------------------
-# Bash-Preexec is a Atuin dependency
-[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
-eval "$(atuin init bash --disable-up-arrow)"
+if [ -e "$HOME/.atuin/bin/env" ] ; then
+  [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh # Bash-Preexec is a Atuin dependency
+  source ~/.atuin/bin/env # Set PATH so it includes atuin's bin if it exists
+  eval "$(atuin init bash --disable-up-arrow)"
+fi
 # -------------------------------------------------------------
 
 # ---------------------- Starship Setup -----------------------
