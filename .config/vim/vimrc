@@ -1,0 +1,133 @@
+" Move the vim info file out of the home directory
+set viminfofile=$HOME/.local/state/vim/viminfo
+" Move swap files into standard location
+set directory^=$HOME/.local/state/vim/swap//
+
+"------------------------------- Status Column --------------------------------
+" This status line configuration consists of the sign column, the fold column,
+"  and the line number column. The size of the sign and fold columns are
+"  automatic. They are both only present if there is something to display and
+"  are at minimum two and one characters wide, respectively. The size of the
+"  line number column is wide enough to fit the max line number plus a space.
+"  These were formatted using the functionality of status column. The line
+"  number column shows the current line number for the current line and
+"  relative line numbers for others. The current line number is preceeded by
+"  zeros filling the whole line number column width. All line numbers are
+"  aligned to the right.
+
+"set statuscolumn=%s%C%=%{%v:relnum?\"%r\":\"%0\"..(float2nr(log10(line(\"$\")))+1)..\"l\"%}\ 
+
+" Line Numbers
+set number " Show line numbers
+set relativenumber " Show relative line numbers
+set numberwidth=1 " Width for number column
+
+" Sign Column
+set signcolumn=auto " Width for sign column
+
+" Fold Column
+"set foldcolumn=auto " Width for fold column
+set fillchars=foldopen:\,foldclose:\ " Fold column characters
+"------------------------------------------------------------------------------
+
+"------------------------------ Editor Behavior -------------------------------
+set mouse=a " Turn on mouse mode
+
+" Project specific configuration files:
+"vim.g.editorconfig " Enables .editorconfig files for project specific formatting
+"set exrc " Automatically execute trusted .nvim.lua and .nvimrc files in cwd
+
+" Default Tab Behavior
+set tabstop=2 " Tab size
+set shiftwidth=2 " Number of spaces for (auto)indent
+set expandtab " Turn tab into spaces
+
+" Default User Interface Behavior
+set nowrap " Wrap text
+set breakindent " Preserve indentation when wrapping text
+set cursorline " Highlight the entire line containing the cursor
+set colorcolumn=81 " Highlight a vertical column for visual character limit
+set termguicolors " Helps with displaying colors correctly
+
+" Searching Behavior
+set ignorecase " Ignore capitalization when searching a file
+set smartcase " Stop ignoring capitalization when searching a capital letter
+set hlsearch " Highlight search term
+
+" Set command mode autocomplete behavior
+"  Tab completes until the longest matching string, two tabs lists available commands,
+"  then one more tab selects the first match from the list.
+set wildmode=longest,longest,longest:full,full
+
+" Show the following hidden characters
+set listchars=trail:-,nbsp:+,tab:▏\ ,eol:↴
+set list
+"------------------------------------------------------------------------------
+
+"------------------------------- Diff Behavior --------------------------------
+set diffopt=internal,filler,closeoff,foldcolumn:1,followwrap,algorithm:histogram
+"------------------------------------------------------------------------------
+
+"------------------------------- Keymaps --------------------------------------
+" Space as leader key
+let mapleader=" "
+
+" Visual select whole buffer
+nmap <leader>a <cmd>keepjumps normal! ggVG<cr>
+
+" Insert newline below
+nmap <leader>o o<Esc>k
+
+" Insert newline above
+nmap <leader>O O<Esc>j
+
+" Save vim session to Session.vim
+nmap <c-s> <cmd>mksession!
+
+nmap <esc> <cmd>nohlsearch
+
+" Essentially creates a line text object
+"  - this is for operating on lines without counting the newline
+xmap al :normal 0v$h<CR>
+omap al :normal 0v$h<CR>
+xmap il :normal ^vg_<CR>
+omap il :normal ^vg_<CR>
+
+" Basic clipboard/register interaction
+" nmap gy "+y
+" xmap gy "+y
+" nmap gY "+Y
+" xmap gY "+Y
+" nmap gp "+p
+" xmap gp "+p
+nmap <C-p> <cmd>let @+ = @%<cr>
+nnoremap x "_x
+xnoremap x "_x
+
+" Buffer Commands
+nmap <leader>bd <cmd>bdelete<cr>
+nmap <leader>bl <cmd>buffer #<cr>
+nmap <leader>bn <cmd>bnext<cr>
+nmap <leader>bp <cmd>bprevious<cr>
+
+" Ctags
+nmap <F12> <cmd>call GenerateCtags()<CR>
+xmap <F12> <cmd>call GenerateCtags()<CR>
+function! s:CtagsHandler(job_id, data, event)
+  if a:event == 'exit'
+    echo "Generating Tags... Complete"
+  endif
+endfunction
+function! GenerateCtags()
+  let l:ctags_cmd = "ctags -R --fields=+Slk --c-types=+deftuxgsmp -B --exclude=build --exclude=megainclude ."
+  echo "Generating Tags..."
+  if has('nvim')
+    let job = jobstart(l:ctags_cmd, {'on_exit': function('s:CtagsHandler')})
+  else
+    call system(l:ctags_cmd)
+    call s:CtagsHandler(0, "", 'exit')
+  endif
+endfunction
+
+nmap <BS> <cmd>silent let @/=expand('<cword>') <bar> set hls <cr>
+"------------------------------------------------------------------------------
