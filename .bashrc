@@ -136,3 +136,6 @@ export TASK_X_MAP_VARIABLES=2
 # Git bash completion configuration
 export GIT_COMPLETION_SHOW_ALL_COMMANDS=1
 export GIT_COMPLETION_SHOW_ALL=1
+
+# Specify ripgrep config location
+export RIPGREP_CONFIG_PATH=~/.config/ripgrep/ripgreprc

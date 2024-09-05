@@ -1,0 +1,16 @@
+# Don't let ripgrep vomit really long lines to my terminal, and show a preview.
+--max-columns=150
+--max-columns-preview
+
+# Using glob patterns to include/exclude files or folders
+--glob=!.git/*
+
+# Search hidden files / directories (e.g. dotfiles) by default
+--hidden
+
+# Don't respect version control ignore files (.gitignore, etc.)
+--no-ignore-vcs
+
+# Searches case insensitively if the pattern is all lowercase.
+# Search case sensitively otherwise.
+--smart-case

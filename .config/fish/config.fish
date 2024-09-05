@@ -14,4 +14,6 @@ if status is-interactive
 
   set -U fish_greeting # Remove fish welcome message
 
+  export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/ripgreprc"
+
 end
