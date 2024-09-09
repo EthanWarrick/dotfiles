@@ -2,7 +2,9 @@
 	hooksPath = ~/.config/git/hooks
 	safecrlf = true
 	editor = nvim
-	pager = bat
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only --features=interactive
 [init]
 	defaultBranch = master
 [clangFormat]
@@ -57,6 +59,19 @@
 [maintenance "pack-refs"]
 	enabled = false
 	schedule = weekly
+
+[delta]
+	line-numbers = true
+	hyperlinks = true
+	paging = never
+	hyperlinks-file-link-format = file://{path}:{line}
+	commit-decoration-style = blue ol
+	commit-style = raw
+	file-style = omit
+	hunk-header-decoration-style = blue box
+	hunk-header-file-style = red
+	hunk-header-line-number-style = "#067a00"
+	hunk-header-style = file line-number syntax
 
 ; Override config file for non-public git settings
 ;   NOTE: This requires git version 1.7.10+
