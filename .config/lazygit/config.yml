@@ -30,18 +30,13 @@ promptToReturnFromSubprocess: false # display confirmation when subprocess termi
 customCommands:
   - key: '<c-a>'
     description: 'Create patch file for selected commit'
-    context: 'commits'
-    command: 'git format-patch -1 {{.SelectedLocalCommit.Sha}}'
-    stream: true
-  - key: '<c-a>'
-    description: 'Create patch file for selected commit'
-    context: 'subCommits'
-    command: 'git format-patch -1 {{.SelectedSubCommit.Sha}}'
+    context: 'commits,subCommits'
+    command: 'git format-patch -1 {{.SelectedCommit.Sha}}'
     stream: true
   - key: '<c-p>'
     description: 'Push stack from selected commit to Gerrit'
     context: 'commits'
-    command: 'git push {{.CheckedOutBranch.UpstreamRemote}} {{.SelectedLocalCommit.Sha}}:refs/for/{{.CheckedOutBranch.UpstreamBranch}}{{if index .PromptResponses 1}}%{{index .PromptResponses 1}} && export LIST=$(lazygit -cd)/gerrit_history.log && grep -xvF "{{index .PromptResponses 1}}" $LIST > /tmp/gerrit_history.log && mv /tmp/gerrit_history.log $LIST && echo "{{index .PromptResponses 1}}" >> $LIST{{end}}'
+    command: 'git push {{.CheckedOutBranch.UpstreamRemote}} {{.SelectedCommit.Sha}}:refs/for/{{.CheckedOutBranch.UpstreamBranch}}{{if index .PromptResponses 1}}%{{index .PromptResponses 1}} && export LIST=$(lazygit -cd)/gerrit_history.log && grep -xvF "{{index .PromptResponses 1}}" $LIST > /tmp/gerrit_history.log && mv /tmp/gerrit_history.log $LIST && echo "{{index .PromptResponses 1}}" >> $LIST{{end}}'
     stream: true
     prompts:
       - type: 'confirm'
@@ -54,7 +49,7 @@ customCommands:
   - key: '<c-x>'
     description: 'Adds a Signed-off-by line to selected commit'
     context: 'commits'
-    command: 'git commit --no-edit --signoff --fixup=reword:{{.SelectedLocalCommit.Sha}} && GIT_SEQUENCE_EDITOR="cat > /dev/null" git rebase --interactive --autostash --keep-empty --rebase-merges --autosquash {{.SelectedLocalCommit.Sha}}^'
+    command: 'git commit --no-edit --signoff --fixup=reword:{{.SelectedCommit.Sha}} && GIT_SEQUENCE_EDITOR="cat > /dev/null" git rebase --interactive --autostash --keep-empty --rebase-merges --autosquash {{.SelectedCommit.Sha}}^'
     stream: true
   - key: '<c-/>'
     description: 'Run Taskfile task'
