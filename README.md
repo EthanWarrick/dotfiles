@@ -14,9 +14,9 @@ environments.
 To use this dotfiles configuration, follow the following steps:
 ```bash
 # Clone as bare repo
-git clone --bare https://github.com/EthanWarrick/dotfiles.git .dotfiles
+git clone --bare https://github.com/EthanWarrick/dotfiles.git $HOME/.dotfiles
 
-# Install (overwrite) dotfiles in home directory
+# Install (overwrite!!) dotfiles in home directory
 git --git-dir=$HOME/.dotfiles --work-tree=$HOME checkout -f
 
 # Don't show untracked files git status to avoid clutter
