@@ -116,7 +116,11 @@ if ! shopt -oq posix; then
 fi
 
 # ------------------------- Fzf Setup -------------------------
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+if [ -f ~/.fzf.bash ]; then
+  source ~/.fzf.bash
+elif [ -x ~/.local/bin/fzf ]; then
+  eval "$(fzf --bash)"
+fi
 # -------------------------------------------------------------
 
 # ------------------------ Atuin Setup ------------------------
