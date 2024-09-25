@@ -82,9 +82,9 @@ nmap <leader>o o<Esc>k
 nmap <leader>O O<Esc>j
 
 " Save vim session to Session.vim
-nmap <c-s> <cmd>mksession!
+nmap <c-s> <cmd>mksession!<cr>
 
-nmap <esc> <cmd>nohlsearch
+nmap <esc> <cmd>nohlsearch<cr>
 
 " Essentially creates a line text object
 "  - this is for operating on lines without counting the newline
