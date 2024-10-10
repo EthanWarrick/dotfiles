@@ -4,6 +4,9 @@
 
 # Using glob patterns to include/exclude files or folders
 --glob=!.git/*
+--glob=!build/*
+--glob=!.build/*
+--glob=!tags
 
 # Search hidden files / directories (e.g. dotfiles) by default
 --hidden
