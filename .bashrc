@@ -124,10 +124,14 @@ fi
 # -------------------------------------------------------------
 
 # ------------------------ Atuin Setup ------------------------
-if [ -e "$HOME/.atuin/bin/env" ] ; then
-  [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh # Bash-Preexec is a Atuin dependency
-  source ~/.atuin/bin/env # Set PATH so it includes atuin's bin if it exists
-  eval "$(atuin init bash --disable-up-arrow)"
+if [[ -f ~/.bash-preexec.sh ]]; then
+  source ~/.bash-preexec.sh # Bash-Preexec is a Atuin dependency
+  if ! command -v atuin 2>&1 >/dev/null && [ -e "$HOME/.atuin/bin/env" ] ; then
+    source ~/.atuin/bin/env # Set PATH so it includes atuin's bin if it exists
+  fi
+  if command -v atuin 2>&1 >/dev/null; then
+    eval "$(atuin init bash --disable-up-arrow)"
+  fi
 fi
 # -------------------------------------------------------------
 
