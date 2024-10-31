@@ -116,10 +116,10 @@ if ! shopt -oq posix; then
 fi
 
 # ------------------------- Fzf Setup -------------------------
-if [ -f ~/.fzf.bash ]; then
-  source ~/.fzf.bash
-elif [ -x ~/.local/bin/fzf ]; then
+if command -v fzf 2>&1 >/dev/null; then
   eval "$(fzf --bash)"
+elif [ -f ~/.fzf.bash ]; then
+  source ~/.fzf.bash
 fi
 # -------------------------------------------------------------
 
