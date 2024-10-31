@@ -11,12 +11,6 @@ else
   alias l="ls -CF"
 fi
 
-if command -v rg &> /dev/null; then
-  alias grep="rg"
-fi
-
-# alias ssh='TERM=xterm-256color ssh'
-
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -40,21 +34,7 @@ cd() {
 reboot () { echo 'Reboot? (y/N)' && read x && [[ "$x" == "y" ]] && /sbin/reboot; }
 poweroff () { echo 'Poweroff? (y/N)' && read x && [[ "$x" == "y" ]] && /sbin/poweroff; }
 
-
 alias n="nvim"
-
-# NVIM Select: Opens a small window to choose a neovim config
-function nvims() {
-  items=("nvim_tests" "default" "lazyvim" "nvim_simple" )
-  config=$(printf "%s\n" "${items[@]}" | fzf --prompt="Neovim Config => " --height=~50% --layout=reverse --border --exit-0)
-  if [[ -z $config ]]; then
-    echo "Nothing selected"
-    return 0
-  elif [[ $config == "default" ]]; then
-    config=""
-  fi
-  NVIM_APPNAME=$config nvim $@
-}
 
 function lzg() { 
   config="$HOME/.config/lazygit/config.yml"
