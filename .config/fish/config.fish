@@ -16,4 +16,8 @@ if status is-interactive
 
   export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/ripgreprc"
 
+  if command --query bat
+    export MANPAGER="sh -c 'col -bx | bat -l man -p --paging=always'"
+  end
+
 end

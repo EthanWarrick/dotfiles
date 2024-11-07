@@ -147,3 +147,7 @@ export GIT_COMPLETION_SHOW_ALL=1
 
 # Specify ripgrep config location
 export RIPGREP_CONFIG_PATH=~/.config/ripgrep/ripgreprc
+
+if command -v bat 2>&1 >/dev/null; then
+  export MANPAGER="sh -c 'col -bx | bat -l man -p --paging=always'"
+fi
