@@ -15,6 +15,8 @@ if status is-interactive
   set -U fish_greeting # Remove fish welcome message
 
   export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/ripgreprc"
+  export FZF_DEFAULT_COMMAND='fd --ignore-file $HOME/.config/fd/ignore'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
   if command --query bat
     export MANPAGER="sh -c 'col -bx | bat -l man -p --paging=always'"

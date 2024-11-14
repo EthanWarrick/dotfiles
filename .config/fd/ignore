@@ -1,0 +1,7 @@
+# vim:filetype=gitignore
+# Ignore file for fd application. (https://github.com/sharkdp/fd)
+# Follows gitignore syntax, and is auto respected by fd.
+
+.git/
+build/
+.build/
