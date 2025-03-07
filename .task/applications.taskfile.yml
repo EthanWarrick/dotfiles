@@ -1,0 +1,527 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+# https://taskfile.dev
+version: '3'
+
+vars:
+  LOCAL_BIN: $HOME/.local/bin/
+  LOCAL_COMPLETION_BASH: $HOME/.local/share/bash-completion/completions
+  LOCAL_COMPLETION_FISH: $HOME/.config/fish/completions
+  LOCAL_MAN: $HOME/.local/share/man
+
+tasks:
+  platform:
+    cmds:
+      - echo {{OS}} {{ARCH}}
+  install:atuin:
+    desc: Magical shell history
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/atuinsh/atuin/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | command grep -E -- "atuin-aarch64-unknown-linux-musl.tar.gz$"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/atuinsh/atuin/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | command grep -E -- "atuin-x86_64-unknown-linux-musl.tar.gz$"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - mv {{.DIR}}/atuin {{.LOCAL_BIN}}
+      - atuin gen-completions --shell bash > {{.LOCAL_COMPLETION_BASH}}/atuin
+      - atuin gen-completions --shell fish > {{.LOCAL_COMPLETION_FISH}}/atuin.fish
+  install:bat:
+    desc: A cat(1) clone with wings.
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "-arm-unknown-linux-musleabihf.tar.gz"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "-x86_64-unknown-linux-musl.tar.gz"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - mv {{.DIR}}/bat {{.LOCAL_BIN}}
+      - mv {{.DIR}}/autocomplete/bat.bash {{.LOCAL_COMPLETION_BASH}}/bat
+      - mv {{.DIR}}/autocomplete/bat.fish {{.LOCAL_COMPLETION_FISH}}/bat.fish
+      - mv {{.DIR}}/bat.1 {{.LOCAL_MAN}}/man1/
+  install:delta:
+    desc: A syntax-highlighting pager for git, diff, grep, and blame output
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/dandavison/delta/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "-arm-unknown-linux-gnueabihf.tar.gz"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/dandavison/delta/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "-x86_64-unknown-linux-musl.tar.gz"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - mv {{.DIR}}/delta {{.LOCAL_BIN}}
+      - delta --generate-completion bash > {{.LOCAL_COMPLETION_BASH}}/delta
+      - delta --generate-completion fish > {{.LOCAL_COMPLETION_FISH}}/delta.fish
+  install:docker:
+    desc: Containers
+    cmds:
+      - sudo apt-get update
+      - sudo apt-get -y install ca-certificates curl
+      - sudo install -m 0755 -d /etc/apt/keyrings
+      - sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+      - sudo chmod a+r /etc/apt/keyrings/docker.asc
+      - |
+        echo \
+          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+          $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+          sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      - sudo apt-get update
+      - sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      - sudo groupadd -f docker
+      - sudo usermod -aG docker $USER
+      - docker run hello-world
+  install:duf:
+    desc: Disk Usage/Free Utility - a better 'df' alternative
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/muesli/duf/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "_linux_arm64.tar.gz"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/muesli/duf/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "_linux_x86_64.tar.gz"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    # cmds:
+    #   - echo {{.LINK}}
+    #   - echo {{.FILE}}
+    #   - echo {{.DIR}}
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - mv duf {{.LOCAL_BIN}}
+  install:eza:
+    desc: A modern alternative to ls
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/eza-community/eza/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "_aarch64-unknown-linux-gnu.tar.gz"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/eza-community/eza/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "_x86_64-unknown-linux-musl.tar.gz"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - mv eza {{.LOCAL_BIN}}
+      - curl -L -o {{.LOCAL_COMPLETION_BASH}}/eza https://raw.githubusercontent.com/eza-community/eza/main/completions/bash/eza
+      - curl -L -o {{.LOCAL_COMPLETION_FISH}}/eza.fish https://raw.githubusercontent.com/eza-community/eza/main/completions/fish/eza.fish
+      # TODO: install man pages
+  install:fd:
+    desc: A simple, fast and user-friendly alternative to 'find'
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/sharkdp/fd/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "-arm-unknown-linux-musleabihf.tar.gz"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/sharkdp/fd/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "-x86_64-unknown-linux-musl.tar.gz"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - mv {{.DIR}}/fd {{.LOCAL_BIN}}
+      - mv {{.DIR}}/fd.1 {{.LOCAL_MAN}}/man1/
+      - mv {{.DIR}}/autocomplete/fd.bash {{.LOCAL_COMPLETION_BASH}}/fd
+      - mv {{.DIR}}/autocomplete/fd.fish {{.LOCAL_COMPLETION_FISH}}
+  install:fzf:
+    desc: A command-line fuzzy finder
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/junegunn/fzf/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "-linux_arm64.tar.gz"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/junegunn/fzf/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "-linux_amd64.tar.gz"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - mv fzf {{.LOCAL_BIN}}
+      - curl -fSsL "https://raw.githubusercontent.com/junegunn/fzf/master/man/man1/fzf.1" > {{.LOCAL_MAN}}/man1/fzf.1
+      - curl -fSsL "https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.bash" > {{.LOCAL_COMPLETION_BASH}}/fzf
+  install:grip:
+    desc: Preview GitHub README.md files locally before committing them.
+    cmds:
+      - pipx install grip
+  install:lazygit:
+    desc: simple terminal UI for git commands
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/jesseduffield/lazygit/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "_Linux_arm64.tar.gz"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/jesseduffield/lazygit/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "_Linux_x86_64.tar.gz"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - mv lazygit {{.LOCAL_BIN}}
+  install:lazydocker:
+    desc: The lazier way to manage everything docker
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/jesseduffield/lazydocker/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "_Linux_arm64.tar.gz"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/jesseduffield/lazydocker/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "_Linux_x86_64.tar.gz"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - mv lazydocker {{.LOCAL_BIN}}
+  install:lua:
+    desc: A powerful, efficient, lightweight, embeddable scripting language
+    dir: /tmp/
+    cmds:
+      - curl -L -R -O https://www.lua.org/ftp/lua-5.4.7.tar.gz
+      - tar zxf lua-5.4.7.tar.gz
+      - cd lua-5.4.7; make all test
+      - cd lua-5.4.7; make install INSTALL_TOP=$HOME/.local
+  install:nvim:
+    desc: Vim-fork focused on extensibility and usability
+    dir: /tmp/neovim/
+    cmds:
+      - git clone --depth 1 --branch stable https://github.com/neovim/neovim.git .
+      - sudo apt install ninja-build gettext cmake curl build-essential
+      - make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=/home/warrickethan/.local/
+      - sudo make install
+  install:open-in-editor:
+    desc: Open a local file from a URL at a line number in an editor/IDE
+    cmds:
+      - curl -fSsL "https://raw.githubusercontent.com/dandavison/open-in-editor/master/open-in-editor" > {{.LOCAL_BIN}}/open-in-editor
+      - chmod +x {{.LOCAL_BIN}}/open-in-editor
+  install:pipx:
+    desc: Install and Run Python Applications in Isolated Environments
+    cmds:
+      - python3 -m pip install --user pipx
+  install:poetry:
+    desc: Python packaging and dependency management made easy
+    cmds:
+      - pipx install poetry
+      - poetry completions bash > {{.LOCAL_COMPLETION_BASH}}/poetry
+      - poetry completions fish > {{.LOCAL_COMPLETION_FISH}}/poetry.fish
+  install:pyhid-usb-relay:
+    desc: Python script for controlling dcttech USB HID relay modules
+    cmds:
+      - pipx install pyhid-usb-relay
+  install:ripgrep:
+    desc: ripgrep recursively searches directories for a regex pattern while respecting your gitignore
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/BurntSushi/ripgrep/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | command grep -E -- "-aarch64-unknown-linux-gnu.tar.gz$"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/BurntSushi/ripgrep/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | command grep -E -- "-x86_64-unknown-linux-musl.tar.gz$"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - mv {{.DIR}}/rg {{.LOCAL_BIN}}
+      - mv {{.DIR}}/complete/rg.bash {{.LOCAL_COMPLETION_BASH}}/rg
+      - mv {{.DIR}}/complete/rg.fish {{.LOCAL_COMPLETION_FISH}}/rg.fish
+      - mv {{.DIR}}/doc/rg.1 {{.LOCAL_MAN}}/man1/
+  install:scc:
+    desc: A very fast accurate code counter with complexity calculations and COCOMO estimates written in pure Go
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/boyter/scc/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "_Linux_arm64.tar.gz"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/boyter/scc/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "_Linux_x86_64.tar.gz"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - mv scc {{.LOCAL_BIN}}
+  install:starship:
+    desc: The minimal, blazing-fast, and infinitely customizable prompt for any shell!
+    cmds:
+      - curl -sS https://starship.rs/install.sh | sh -s -- -V --yes --bin-dir $HOME/.local/bin/
+      - starship completions bash > {{.LOCAL_COMPLETION_BASH}}/starship
+      - starship completions fish > {{.LOCAL_COMPLETION_FISH}}/starship.fish
+  install:task:
+    desc: Install Taskfile
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/go-task/task/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | command grep -E -- "_linux_arm64.tar.gz"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/go-task/task/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | command grep -E -- "_linux_amd64.tar.gz"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - mv task {{.LOCAL_BIN}}
+      - mv completion/bash/task.bash {{.LOCAL_COMPLETION_BASH}}/task
+      - mv completion/fish/task.fish {{.LOCAL_COMPLETION_FISH}}/task.fish
+  install:tig:
+    desc: Text-mode interface for git
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/jonas/tig/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | command grep -E -- ".tar.gz$"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/jonas/tig/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | command grep -E -- ".tar.gz$"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - make -C {{.DIR}}
+      - cp {{.DIR}}/src/tig {{.LOCAL_BIN}}
+      - cp {{.DIR}}/doc/tig.1 {{.LOCAL_MAN}}/man1/
+      - cp {{.DIR}}/doc/tigrc.5 {{.LOCAL_MAN}}/man5/
+  install:tio:
+    desc: A serial device I/O tool
+    cmds:
+      - sudo snap install --classic tio
+      - ln -sf /snap/tio/current/usr/share/bash-completion/bash_completion {{.LOCAL_COMPLETION_BASH}}/tio
+      - ln -sf /snap/tio/current/usr/share/man/man1/tio.1 {{.LOCAL_MAN}}/man1/
+  install:tmux:
+    desc: Install Tmux
+    cmds:
+      - sudo snap install --classic tmux
+      - curl -fSsL "https://raw.githubusercontent.com/imomaliev/tmux-bash-completion/master/completions/tmux" > {{.LOCAL_COMPLETION_BASH}}/tmux
+  install:u-ctags:
+    desc: A maintained ctags implementation
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/universal-ctags/ctags/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- ".tar.gz"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/universal-ctags/ctags/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- ".tar.gz"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - cd {{.DIR}}; ./autogen.sh
+      - cd {{.DIR}}; ./configure --prefix=$HOME/.local/
+      - cd {{.DIR}}; make
+      - cd {{.DIR}}; make install # Installs bin and manpages
+  install:uv:
+    desc: An extremely fast Python package and project manager, written in Rust.
+    cmds:
+      - curl -LsSf https://astral.sh/uv/install.sh | env INSTALLER_NO_MODIFY_PATH=1 UV_INSTALL_DIR="$HOME/.local/" sh -s -- -v
+      - uv generate-shell-completion bash > {{.LOCAL_COMPLETION_BASH}}/uv
+      - uv generate-shell-completion fish > {{.LOCAL_COMPLETION_FISH}}/uv.fish
+      - uvx --generate-shell-completion bash > {{.LOCAL_COMPLETION_BASH}}/uvx
+      - uvx --generate-shell-completion fish > {{.LOCAL_COMPLETION_FISH}}/uvx.fish
+  install:zellij:
+    desc: A terminal workspace with batteries included
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/zellij-org/zellij/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "-aarch64-unknown-linux-musl.tar.gz"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/zellij-org/zellij/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "-x86_64-unknown-linux-musl.tar.gz"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+    cmds:
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - mv zellij {{.LOCAL_BIN}}
+      - zellij setup --generate-completion bash > {{.LOCAL_COMPLETION_BASH}}/zellij
+      - zellij setup --generate-completion fish > {{.LOCAL_COMPLETION_FISH}}/zellij.fish
+  install:kitty:
+    desc: The fast, feature-rich, GPU based terminal emulator
+    cmds:
+      - curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+      # Create symbolic links to add kitty and kitten to PATH (assuming ~/.local/bin is in your system-wide PATH)
+      - ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
+      # Place the kitty.desktop file somewhere it can be found by the OS
+      - cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
+      # If you want to open text files and images in kitty via your file manager also add the kitty-open.desktop file
+      # - cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/
+      # Update the paths to the kitty and its icon in the kitty desktop file(s)
+      - sed -i "s|Icon=kitty|Icon=$(readlink -f ~)/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop
+      - sed -i "s|Exec=kitty|Exec=$(readlink -f ~)/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop
+      # Make xdg-terminal-exec (and hence desktop environments that support it use kitty)
+      - cat ~/.config/xdg-terminals.list | grep kitty.desktop || echo 'kitty.desktop' >> ~/.config/xdg-terminals.list
+
+  # install:sd-mux:
+  # install:metadev:
+  # install:rust:
+  # install:go:
+  # install:kitty:
+  # install:wezterm:
+  # install:bear:
+  # install:dt-schema:
