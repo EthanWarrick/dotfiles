@@ -59,10 +59,10 @@ let mapleader=" "
 nmap <leader>a <cmd>keepjumps normal! ggVG<cr>
 
 " Insert newline below
-nmap <leader>o o<Esc>k
+nmap ]<space> o<Esc>k
 
 " Insert newline above
-nmap <leader>O O<Esc>j
+nmap [<space> O<Esc>j
 
 " Save vim session to Session.vim
 nmap <c-s> <cmd>mksession!<cr>
