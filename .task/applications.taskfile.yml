@@ -288,12 +288,35 @@ tasks:
       - cd lua-5.4.7; make install INSTALL_TOP=$HOME/.local
   install:nvim:
     desc: Vim-fork focused on extensibility and usability
-    dir: /tmp/neovim/
+    # dir: /tmp/neovim/
+    # cmds:
+    #   - git clone --depth 1 --branch stable https://github.com/neovim/neovim.git .
+    #   - sudo apt install ninja-build gettext cmake curl build-essential
+    #   - make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=/home/warrickethan/.local/
+    #   - sudo make install
+    dir: /tmp/
+    vars:
+      LINK:
+        sh: |
+            if [ "{{ARCH}}" = "arm64" ]; then
+              curl -s https://api.github.com/repos/neovim/neovim/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "-Linux-arm64.tar.gz"
+            elif [ "{{ARCH}}" = "amd64" ]; then
+              curl -s https://api.github.com/repos/neovim/neovim/releases/latest \
+              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
+              | grep -- "-linux-x86_64.tar.gz"
+            fi
+      FILE:
+        sh: |
+            echo {{.LINK}} | grep -oP '[^/]+$'
+      DIR:
+        sh: |
+            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
     cmds:
-      - git clone --depth 1 --branch stable https://github.com/neovim/neovim.git .
-      - sudo apt install ninja-build gettext cmake curl build-essential
-      - make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=/home/warrickethan/.local/
-      - sudo make install
+      - wget {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - rsync --recursive {{.DIR}}/* $HOME/.local/
   install:open-in-editor:
     desc: Open a local file from a URL at a line number in an editor/IDE
     cmds:
