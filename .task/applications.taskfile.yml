@@ -46,7 +46,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv {{.DIR}}/atuin {{.LOCAL_BIN}}
       - atuin gen-completions --shell bash > {{.LOCAL_COMPLETION_BASH}}/atuin
@@ -60,7 +60,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv {{.DIR}}/bat {{.LOCAL_BIN}}
       - mv {{.DIR}}/autocomplete/bat.bash {{.LOCAL_COMPLETION_BASH}}/bat
@@ -75,7 +75,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv {{.DIR}}/delta {{.LOCAL_BIN}}
       - delta --generate-completion bash > {{.LOCAL_COMPLETION_BASH}}/delta
@@ -107,7 +107,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv duf {{.LOCAL_BIN}}
   install:eza:
@@ -119,7 +119,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv eza {{.LOCAL_BIN}}
       - curl -L -o {{.LOCAL_COMPLETION_BASH}}/eza https://raw.githubusercontent.com/eza-community/eza/main/completions/bash/eza
@@ -134,7 +134,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv {{.DIR}}/fd {{.LOCAL_BIN}}
       - mv {{.DIR}}/fd.1 {{.LOCAL_MAN}}/man1/
@@ -149,7 +149,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv fzf {{.LOCAL_BIN}}
       - curl -fSsL "https://raw.githubusercontent.com/junegunn/fzf/master/man/man1/fzf.1" > {{.LOCAL_MAN}}/man1/fzf.1
@@ -167,7 +167,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv lazygit {{.LOCAL_BIN}}
   install:lazydocker:
@@ -179,7 +179,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv lazydocker {{.LOCAL_BIN}}
   install:lua:
@@ -249,7 +249,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv {{.DIR}}/rg {{.LOCAL_BIN}}
       - mv {{.DIR}}/complete/rg.bash {{.LOCAL_COMPLETION_BASH}}/rg
@@ -264,7 +264,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv scc {{.LOCAL_BIN}}
   install:starship:
@@ -282,7 +282,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv task {{.LOCAL_BIN}}
       - mv completion/bash/task.bash {{.LOCAL_COMPLETION_BASH}}/task
@@ -296,7 +296,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - make -C {{.DIR}}
       - cp {{.DIR}}/src/tig {{.LOCAL_BIN}}
@@ -322,7 +322,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - cd {{.DIR}}; ./autogen.sh
       - cd {{.DIR}}; ./configure --prefix=$HOME/.local/
@@ -345,7 +345,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv zellij {{.LOCAL_BIN}}
       - zellij setup --generate-completion bash > {{.LOCAL_COMPLETION_BASH}}/zellij
