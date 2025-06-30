@@ -37,6 +37,13 @@ tasks:
       - echo DIR={{.DIR}}
       # - curl -LO {{.LINK}}
       # - tar -xvzf {{.FILE}}
+  populate-dirs:
+    desc: Mkdir the dirs that are used in this Taskfile
+    cmds:
+      - mkdir -p {{.LOCAL_BIN}}
+      - mkdir -p {{.LOCAL_COMPLETION_BASH}}
+      - mkdir -p {{.LOCAL_COMPLETION_FISH}}
+      - mkdir -p {{.LOCAL_MAN}}
   install:atuin:
     desc: Magical shell history
     dir: /tmp/
