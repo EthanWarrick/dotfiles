@@ -12,27 +12,39 @@ tasks:
   platform:
     cmds:
       - echo {{OS}} {{ARCH}}
+  github-get:
+    desc: Download the latest release of a github package
+    dir: /tmp/
+    requires:
+      vars: [REPO, LINK, FILE, DIR]
+    vars:
+      LINK: &common-link
+        sh: |
+            curl -s https://api.github.com/repos/{{.REPO}}/releases/latest \
+            | sed -nE 's/^[[:space:]]*"browser_download_url": "(.*\.tar\.gz)"/\1/p' \
+            | grep -i {{ if eq OS "darwin" }} "darwin\|macos" {{ else if eq OS "linux" }} "linux" {{end}} \
+            | grep -i {{ if eq ARCH "amd64" }} "amd64\|x86" {{ else if eq ARCH "arm64" }} "arm64" {{end}}
+      FILE: &common-file
+        sh: |
+            echo {{.LINK}} | sed 's:.*/::'
+      DIR: &common-dir
+        sh: |
+            echo {{.FILE}} | sed 's:\.tar\.gz::'
+    cmds:
+      - echo REPO={{.REPO}}
+      - echo LINK={{.LINK}}
+      - echo FILE={{.FILE}}
+      - echo DIR={{.DIR}}
+      # - curl -LO {{.LINK}}
+      # - tar -xvzf {{.FILE}}
   install:atuin:
     desc: Magical shell history
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/atuinsh/atuin/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | command grep -E -- "atuin-aarch64-unknown-linux-musl.tar.gz$"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/atuinsh/atuin/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | command grep -E -- "atuin-x86_64-unknown-linux-musl.tar.gz$"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: atuinsh/atuin
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -43,23 +55,10 @@ tasks:
     desc: A cat(1) clone with wings.
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "-arm-unknown-linux-musleabihf.tar.gz"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "-x86_64-unknown-linux-musl.tar.gz"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: sharkdp/bat
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -71,23 +70,10 @@ tasks:
     desc: A syntax-highlighting pager for git, diff, grep, and blame output
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/dandavison/delta/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "-arm-unknown-linux-gnueabihf.tar.gz"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/dandavison/delta/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "-x86_64-unknown-linux-musl.tar.gz"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: dandavison/delta
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -116,27 +102,10 @@ tasks:
     desc: Disk Usage/Free Utility - a better 'df' alternative
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/muesli/duf/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "_linux_arm64.tar.gz"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/muesli/duf/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "_linux_x86_64.tar.gz"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
-    # cmds:
-    #   - echo {{.LINK}}
-    #   - echo {{.FILE}}
-    #   - echo {{.DIR}}
+      REPO: muesli/duf
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -145,23 +114,10 @@ tasks:
     desc: A modern alternative to ls
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/eza-community/eza/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "_aarch64-unknown-linux-gnu.tar.gz"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/eza-community/eza/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "_x86_64-unknown-linux-musl.tar.gz"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: eza-community/eza
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -173,23 +129,10 @@ tasks:
     desc: A simple, fast and user-friendly alternative to 'find'
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/sharkdp/fd/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "-arm-unknown-linux-musleabihf.tar.gz"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/sharkdp/fd/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "-x86_64-unknown-linux-musl.tar.gz"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: sharkdp/fd
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -201,23 +144,10 @@ tasks:
     desc: A command-line fuzzy finder
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/junegunn/fzf/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "-linux_arm64.tar.gz"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/junegunn/fzf/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "-linux_amd64.tar.gz"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: junegunn/fzf
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -232,23 +162,10 @@ tasks:
     desc: simple terminal UI for git commands
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/jesseduffield/lazygit/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "_Linux_arm64.tar.gz"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/jesseduffield/lazygit/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "_Linux_x86_64.tar.gz"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: jesseduffield/lazygit
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -257,23 +174,10 @@ tasks:
     desc: The lazier way to manage everything docker
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/jesseduffield/lazydocker/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "_Linux_arm64.tar.gz"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/jesseduffield/lazydocker/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "_Linux_x86_64.tar.gz"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: jesseduffield/lazydocker
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -340,23 +244,10 @@ tasks:
     desc: ripgrep recursively searches directories for a regex pattern while respecting your gitignore
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/BurntSushi/ripgrep/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | command grep -E -- "-aarch64-unknown-linux-gnu.tar.gz$"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/BurntSushi/ripgrep/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | command grep -E -- "-x86_64-unknown-linux-musl.tar.gz$"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: BurntSushi/ripgrep
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -368,23 +259,10 @@ tasks:
     desc: A very fast accurate code counter with complexity calculations and COCOMO estimates written in pure Go
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/boyter/scc/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "_Linux_arm64.tar.gz"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/boyter/scc/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "_Linux_x86_64.tar.gz"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: boyter/scc
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -399,23 +277,10 @@ tasks:
     desc: Install Taskfile
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/go-task/task/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | command grep -E -- "_linux_arm64.tar.gz"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/go-task/task/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | command grep -E -- "_linux_amd64.tar.gz"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: go-task/task
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -426,23 +291,10 @@ tasks:
     desc: Text-mode interface for git
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/jonas/tig/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | command grep -E -- ".tar.gz$"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/jonas/tig/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | command grep -E -- ".tar.gz$"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: jonas/tig
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -465,23 +317,10 @@ tasks:
     desc: A maintained ctags implementation
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/universal-ctags/ctags/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- ".tar.gz"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/universal-ctags/ctags/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- ".tar.gz"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: universal-ctags/ctags
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
@@ -501,23 +340,10 @@ tasks:
     desc: A terminal workspace with batteries included
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/zellij-org/zellij/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "-aarch64-unknown-linux-musl.tar.gz"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/zellij-org/zellij/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "-x86_64-unknown-linux-musl.tar.gz"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: zellij-org/zellij
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
