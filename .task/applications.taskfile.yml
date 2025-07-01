@@ -315,10 +315,23 @@ tasks:
       - cp {{.DIR}}/doc/tigrc.5 {{.LOCAL_MAN}}/man5/
   install:tio:
     desc: A serial device I/O tool
+    dir: /tmp/
+    vars:
+      REPO: tio/tio
+      LINK:
+        sh: |
+            curl -s https://api.github.com/repos/{{.REPO}}/releases/latest \
+            | sed -nE 's/^[[:space:]]*"browser_download_url": "(.*\.tar\.xz)"/\1/p'
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
-      - sudo snap install --classic tio
-      - ln -sf /snap/tio/current/usr/share/bash-completion/bash_completion {{.LOCAL_COMPLETION_BASH}}/tio
-      - ln -sf /snap/tio/current/usr/share/man/man1/tio.1 {{.LOCAL_MAN}}/man1/
+      - curl -LO {{.LINK}}
+      - tar -xvf {{.FILE}}
+      - meson setup {{.DIR}}/build {{.DIR}}
+      - meson compile -C {{.DIR}}/build
+      - cp {{.DIR}}/build/src/tio {{.LOCAL_BIN}}
+      - cp {{.DIR}}/build/man/tio.1 {{.LOCAL_MAN}}/man1/
+      - cp {{.DIR}}/build/src/bash-completion/tio {{.LOCAL_COMPLETION_BASH}}/tio
   install:tmux:
     desc: Install Tmux
     cmds:
