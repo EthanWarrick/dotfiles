@@ -7,6 +7,7 @@ vars:
   LOCAL_COMPLETION_BASH: $HOME/.local/share/bash-completion/completions
   LOCAL_COMPLETION_FISH: $HOME/.config/fish/completions
   LOCAL_MAN: $HOME/.local/share/man
+  LIBC: '{{.LIBC | default "gnu"}}'
 
 tasks:
   platform:
@@ -16,14 +17,15 @@ tasks:
     desc: Download the latest release of a github package
     dir: /tmp/
     requires:
-      vars: [REPO, LINK, FILE, DIR]
+      vars: [REPO, LIBC, LINK, FILE, DIR]
     vars:
       LINK: &common-link
         sh: |
             curl -s https://api.github.com/repos/{{.REPO}}/releases/latest \
             | sed -nE 's/^[[:space:]]*"browser_download_url": "(.*\.tar\.(gz|xz))"/\1/p' \
             | grep -i {{ if eq OS "darwin" }} "darwin\|macos" {{ else if eq OS "linux" }} "linux" {{end}} \
-            | grep -i {{ if eq ARCH "amd64" }} "amd64\|x86" {{ else if eq ARCH "arm64" }} "arm64" {{end}}
+            | grep -i {{ if eq ARCH "amd64" }} "amd64\|x86" {{ else if eq ARCH "arm64" }} "arm64\|aarch64" {{end}} \
+            | grep -v '{{ if eq .LIBC "gnu" }}musl{{ else if eq .LIBC "musl" }}gnu{{end}}'
       FILE: &common-file
         sh: |
             echo {{.LINK}} | sed 's:.*/::'
@@ -32,6 +34,7 @@ tasks:
             echo {{.FILE}} | sed -E 's:\.tar\.(gz|xz)::'
     cmds:
       - echo REPO={{.REPO}}
+      - echo LIBC={{.LIBC}}
       - echo LINK={{.LINK}}
       - echo FILE={{.FILE}}
       - echo DIR={{.DIR}}
@@ -252,6 +255,7 @@ tasks:
     dir: /tmp/
     vars:
       REPO: BurntSushi/ripgrep
+      LIBC: musl
       LINK: *common-link
       FILE: *common-file
       DIR: *common-dir
@@ -348,6 +352,7 @@ tasks:
     dir: /tmp/
     vars:
       REPO: zellij-org/zellij
+      LIBC: musl
       LINK: *common-link
       FILE: *common-file
       DIR: *common-dir
