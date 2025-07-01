@@ -21,7 +21,7 @@ tasks:
       LINK: &common-link
         sh: |
             curl -s https://api.github.com/repos/{{.REPO}}/releases/latest \
-            | sed -nE 's/^[[:space:]]*"browser_download_url": "(.*\.tar\.gz)"/\1/p' \
+            | sed -nE 's/^[[:space:]]*"browser_download_url": "(.*\.tar\.(gz|xz))"/\1/p' \
             | grep -i {{ if eq OS "darwin" }} "darwin\|macos" {{ else if eq OS "linux" }} "linux" {{end}} \
             | grep -i {{ if eq ARCH "amd64" }} "amd64\|x86" {{ else if eq ARCH "arm64" }} "arm64" {{end}}
       FILE: &common-file
@@ -29,7 +29,7 @@ tasks:
             echo {{.LINK}} | sed 's:.*/::'
       DIR: &common-dir
         sh: |
-            echo {{.FILE}} | sed 's:\.tar\.gz::'
+            echo {{.FILE}} | sed -E 's:\.tar\.(gz|xz)::'
     cmds:
       - echo REPO={{.REPO}}
       - echo LINK={{.LINK}}
