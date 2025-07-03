@@ -151,3 +151,8 @@ export RIPGREP_CONFIG_PATH=~/.config/ripgrep/ripgreprc
 if command -v bat 2>&1 >/dev/null; then
   export MANPAGER="sh -c 'col -bx | bat -l man -p --paging=always'"
 fi
+
+export LG_CONFIG_FILE="$HOME/.config/lazygit/config.yml"
+if [ -f $HOME/.config/lazygit/private-config.yml ]; then
+  LG_CONFIG_FILE+=",$HOME/.config/lazygit/private-config.yml"
+fi
