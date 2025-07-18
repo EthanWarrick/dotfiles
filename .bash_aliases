@@ -46,6 +46,9 @@ function lzg() {
 
 alias lzd="lazydocker"
 
+# alias fd="fd --hidden --no-ignore --ignore-file=$HOME/.config/fd/ignore"
+alias fd="fd --hidden --no-ignore"
+
 # Copy command output to system clipboard by piping the command to this alias
 alias copy="xclip -rmlastnl -sel clip"
 
