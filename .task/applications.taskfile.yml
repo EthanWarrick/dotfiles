@@ -335,8 +335,22 @@ tasks:
       - cp {{.DIR}}/build/src/bash-completion/tio {{.LOCAL_COMPLETION_BASH}}/tio
   install:tmux:
     desc: Install Tmux
+    dir: /tmp/
+    vars:
+      REPO: tmux/tmux
+      LINK:
+        sh: |
+            curl -s https://api.github.com/repos/{{.REPO}}/releases/latest \
+            | sed -nE 's/^[[:space:]]*"browser_download_url": "(.*\.tar\.(gz|xz))"/\1/p'
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
-      - sudo snap install --classic tmux
+      - curl -LO {{.LINK}}
+      - tar -xvzf {{.FILE}}
+      - sudo apt install libevent-dev
+      - cd {{.DIR}}; ./configure --prefix={{.LOCAL_DIR}}
+      - cd {{.DIR}}; make
+      - cd {{.DIR}}; make install
       - curl -fSsL "https://raw.githubusercontent.com/imomaliev/tmux-bash-completion/master/completions/tmux" > {{.LOCAL_COMPLETION_BASH}}/tmux
   install:u-ctags:
     desc: A maintained ctags implementation
