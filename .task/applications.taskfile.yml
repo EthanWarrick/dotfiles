@@ -3,10 +3,11 @@
 version: '3'
 
 vars:
-  LOCAL_BIN: $HOME/.local/bin/
-  LOCAL_COMPLETION_BASH: $HOME/.local/share/bash-completion/completions
+  LOCAL_DIR: $HOME/.local
+  LOCAL_BIN: '{{.LOCAL_DIR}}/bin/'
+  LOCAL_COMPLETION_BASH: '{{.LOCAL_DIR}}/share/bash-completion/completions'
   LOCAL_COMPLETION_FISH: $HOME/.config/fish/completions
-  LOCAL_MAN: $HOME/.local/share/man
+  LOCAL_MAN: '{{.LOCAL_DIR}}/share/man'
   LIBC: '{{.LIBC | default "gnu"}}'
 
 tasks:
@@ -199,7 +200,7 @@ tasks:
       - curl -L -R -O https://www.lua.org/ftp/lua-5.4.7.tar.gz
       - tar zxf lua-5.4.7.tar.gz
       - cd lua-5.4.7; make all test
-      - cd lua-5.4.7; make install INSTALL_TOP=$HOME/.local
+      - cd lua-5.4.7; make install INSTALL_TOP={{.LOCAL_DIR}}
   install:nvim:
     desc: Vim-fork focused on extensibility and usability
     # dir: /tmp/neovim/
@@ -230,7 +231,7 @@ tasks:
     cmds:
       - wget {{.LINK}}
       - tar -xvzf {{.FILE}}
-      - rsync --recursive {{.DIR}}/* $HOME/.local/
+      - rsync --recursive {{.DIR}}/* {{.LOCAL_DIR}}/
   install:open-in-editor:
     desc: Open a local file from a URL at a line number in an editor/IDE
     cmds:
@@ -281,7 +282,7 @@ tasks:
   install:starship:
     desc: The minimal, blazing-fast, and infinitely customizable prompt for any shell!
     cmds:
-      - curl -sS https://starship.rs/install.sh | sh -s -- -V --yes --bin-dir $HOME/.local/bin/
+      - curl -sS https://starship.rs/install.sh | sh -s -- -V --yes --bin-dir {{.LOCAL_BIN}}
       - starship completions bash > {{.LOCAL_COMPLETION_BASH}}/starship
       - starship completions fish > {{.LOCAL_COMPLETION_FISH}}/starship.fish
   install:task:
@@ -349,13 +350,13 @@ tasks:
       - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - cd {{.DIR}}; ./autogen.sh
-      - cd {{.DIR}}; ./configure --prefix=$HOME/.local/
+      - cd {{.DIR}}; ./configure --prefix={{.LOCAL_DIR}}
       - cd {{.DIR}}; make
       - cd {{.DIR}}; make install # Installs bin and manpages
   install:uv:
     desc: An extremely fast Python package and project manager, written in Rust.
     cmds:
-      - curl -LsSf https://astral.sh/uv/install.sh | env INSTALLER_NO_MODIFY_PATH=1 UV_INSTALL_DIR="$HOME/.local/" sh -s -- -v
+      - curl -LsSf https://astral.sh/uv/install.sh | env INSTALLER_NO_MODIFY_PATH=1 UV_INSTALL_DIR="{{.LOCAL_DIR}}" sh -s -- -v
       - uv generate-shell-completion bash > {{.LOCAL_COMPLETION_BASH}}/uv
       - uv generate-shell-completion fish > {{.LOCAL_COMPLETION_FISH}}/uv.fish
       - uvx --generate-shell-completion bash > {{.LOCAL_COMPLETION_BASH}}/uvx
