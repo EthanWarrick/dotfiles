@@ -2,8 +2,11 @@
 set viminfofile=$HOME/.local/state/vim/viminfo
 " Move swap files into standard location
 set directory^=$HOME/.local/state/vim/swap//
+" Move ~ backup files
+set backupdir^=$HOME/.local/state/vim/backup//
 
 "-------------------------------- Colorscheme ---------------------------------
+colorscheme twilight256
 syntax enable
 "------------------------------------------------------------------------------
 
