@@ -169,6 +169,13 @@ tasks:
     desc: Preview GitHub README.md files locally before committing them.
     cmds:
       - pipx install grip
+  install:hack-font:
+    desc: Install a custom patched version of the Hack Font
+    cmds:
+      - docker build -f hack.Dockerfile -t hack-font-image .
+      - docker run --name hack-font-container hack-font-image
+      - docker cp hack-font-container:/output/. {{.LOCAL_DIR}}/share/fonts
+      - docker rm hack-font-container
   install:lazygit:
     desc: simple terminal UI for git commands
     dir: /tmp/
