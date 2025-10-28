@@ -124,6 +124,10 @@ fi
 # -------------------------------------------------------------
 
 # ------------------------ Atuin Setup ------------------------
+# Install Bash Preexec
+if [[ ! -f ~/.bash-preexec.sh ]]; then
+  curl -s https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh -o ~/.bash-preexec.sh
+fi
 if [[ -f ~/.bash-preexec.sh ]]; then
   source ~/.bash-preexec.sh # Bash-Preexec is a Atuin dependency
   if ! command -v atuin 2>&1 >/dev/null && [ -e "$HOME/.atuin/bin/env" ] ; then
