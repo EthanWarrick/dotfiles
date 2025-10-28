@@ -4,6 +4,8 @@ set viminfofile=$HOME/.local/state/vim/viminfo
 set directory^=$HOME/.local/state/vim/swap//
 " Move ~ backup files
 set backupdir^=$HOME/.local/state/vim/backup//
+" Move .un~ undo files
+set undodir^=$HOME/.local/state/vim/undo//
 
 "-------------------------------- Colorscheme ---------------------------------
 colorscheme twilight256
