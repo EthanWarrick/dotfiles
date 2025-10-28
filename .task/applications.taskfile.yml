@@ -319,6 +319,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
+      - apt install -y ncurses-dev
       - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - make -C {{.DIR}}
@@ -339,6 +340,8 @@ tasks:
     cmds:
       - curl -LO {{.LINK}}
       - tar -xvf {{.FILE}}
+      - apt install -y meson
+      - apt install -y libglib2.0-dev liblua5.2-dev
       - meson setup {{.DIR}}/build {{.DIR}}
       - meson compile -C {{.DIR}}/build
       - cp {{.DIR}}/build/src/tio {{.LOCAL_BIN}}
@@ -358,7 +361,7 @@ tasks:
     cmds:
       - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
-      - sudo apt install libevent-dev
+      - apt install -y libevent-dev bison
       - cd {{.DIR}}; ./configure --prefix={{.LOCAL_DIR}}
       - cd {{.DIR}}; make
       - cd {{.DIR}}; make install
@@ -372,6 +375,7 @@ tasks:
       FILE: *common-file
       DIR: *common-dir
     cmds:
+      - apt install -y gcc make pkg-config autoconf automake python3-docutils libseccomp-dev libjansson-dev libyaml-dev libxml2-dev
       - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - cd {{.DIR}}; ./autogen.sh
