@@ -47,7 +47,11 @@ tasks:
       - mkdir -p {{.LOCAL_BIN}}
       - mkdir -p {{.LOCAL_COMPLETION_BASH}}
       - mkdir -p {{.LOCAL_COMPLETION_FISH}}
-      - mkdir -p {{.LOCAL_MAN}}
+      - mkdir -p {{.LOCAL_MAN}}/man1
+      - mkdir -p {{.LOCAL_MAN}}/man5
+      - mkdir -p {{.LOCAL_MAN}}/man7
+      - mkdir -p {{.LOCAL_DIR}}/share/fonts
+      - mkdir -p {{.LOCAL_DIR}}/share/applications
   install:atuin:
     desc: Magical shell history
     dir: /tmp/
