@@ -134,6 +134,7 @@ if [[ -f ~/.bash-preexec.sh ]]; then
     source ~/.atuin/bin/env # Set PATH so it includes atuin's bin if it exists
   fi
   if command -v atuin 2>&1 >/dev/null; then
+    bind -r '\C-r'
     eval "$(atuin init bash --disable-up-arrow)"
   fi
 fi
