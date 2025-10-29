@@ -387,8 +387,13 @@ tasks:
     dir: /tmp/
     vars:
       REPO: zellij-org/zellij
+      NO_WEB: '{{.NO_WEB | default false}}'
       LIBC: musl
-      LINK: *common-link
+      LINK_PRE: *common-link
+      LINK:
+        sh: |
+            echo "{{.LINK_PRE}}" \
+            | grep {{ if eq .NO_WEB "true" }} -i {{ else if eq .NO_WEB "false" }} -v {{end}} no-web
       FILE: *common-file
       DIR: *common-dir
     cmds:
