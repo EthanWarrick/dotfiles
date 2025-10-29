@@ -227,25 +227,12 @@ tasks:
     #   - sudo make install
     dir: /tmp/
     vars:
-      LINK:
-        sh: |
-            if [ "{{ARCH}}" = "arm64" ]; then
-              curl -s https://api.github.com/repos/neovim/neovim/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "-Linux-arm64.tar.gz"
-            elif [ "{{ARCH}}" = "amd64" ]; then
-              curl -s https://api.github.com/repos/neovim/neovim/releases/latest \
-              | grep -oP '"browser_download_url": "\K(.*)(?=")' \
-              | grep -- "-linux-x86_64.tar.gz"
-            fi
-      FILE:
-        sh: |
-            echo {{.LINK}} | grep -oP '[^/]+$'
-      DIR:
-        sh: |
-            echo {{.FILE}} | grep -oP '^.*(?=.tar.gz)'
+      REPO: neovim/neovim
+      LINK: *common-link
+      FILE: *common-file
+      DIR: *common-dir
     cmds:
-      - wget {{.LINK}}
+      - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - rsync --recursive {{.DIR}}/* {{.LOCAL_DIR}}/
   install:open-in-editor:
