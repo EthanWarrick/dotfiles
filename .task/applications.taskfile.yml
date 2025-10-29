@@ -29,7 +29,7 @@ tasks:
             curl -s https://api.github.com/repos/{{.REPO}}/releases/latest \
             | sed -nE 's/^[[:space:]]*"browser_download_url": "(.*\.tar\.(gz|xz))"/\1/p' \
             | grep -i {{ if eq OS "darwin" }} "darwin\|macos" {{ else if eq OS "linux" }} "linux" {{end}} \
-            | grep -i {{ if eq ARCH "amd64" }} "amd64\|x86" {{ else if eq ARCH "arm64" }} "arm64\|aarch64" {{end}} \
+            | grep -i {{ if eq ARCH "amd64" }} "amd64\|x86_64" {{ else if eq ARCH "arm64" }} "arm64\|aarch64" {{end}} \
             | grep -v '{{ if eq .LIBC "gnu" }}musl{{ else if eq .LIBC "musl" }}gnu{{end}}'
       FILE: &common-file
         sh: |
