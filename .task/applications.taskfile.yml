@@ -381,7 +381,7 @@ tasks:
   install:uv:
     desc: An extremely fast Python package and project manager, written in Rust.
     cmds:
-      - curl -LsSf https://astral.sh/uv/install.sh | env INSTALLER_NO_MODIFY_PATH=1 UV_INSTALL_DIR="{{.LOCAL_DIR}}" sh -s -- -v
+      - curl -LsSf https://astral.sh/uv/install.sh | env INSTALLER_NO_MODIFY_PATH=1 UV_INSTALL_DIR="{{.LOCAL_DIR}}/bin" sh -s -- -v
       - uv generate-shell-completion bash > {{.LOCAL_COMPLETION_BASH}}/uv
       - uv generate-shell-completion fish > {{.LOCAL_COMPLETION_FISH}}/uv.fish
       - uvx --generate-shell-completion bash > {{.LOCAL_COMPLETION_BASH}}/uvx
