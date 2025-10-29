@@ -130,6 +130,7 @@ tasks:
       - curl -LO {{.LINK}}
       - tar -xvzf {{.FILE}}
       - mv duf {{.LOCAL_BIN}}
+      - mv duf.1 {{.LOCAL_MAN}}/man1/
   install:eza:
     desc: A modern alternative to ls
     dir: /tmp/
