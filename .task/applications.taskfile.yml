@@ -20,6 +20,10 @@ tasks:
     requires:
       vars: [REPO, LIBC, LINK, FILE, DIR]
     vars:
+      LINK_BASE: &common-link-base
+        sh: |
+            curl -s https://api.github.com/repos/{{.REPO}}/releases/latest \
+            | sed -nE 's/^[[:space:]]*"browser_download_url": "(.*\.tar\.(gz|xz))"/\1/p'
       LINK: &common-link
         sh: |
             curl -s https://api.github.com/repos/{{.REPO}}/releases/latest \
@@ -36,6 +40,7 @@ tasks:
     cmds:
       - echo REPO={{.REPO}}
       - echo LIBC={{.LIBC}}
+      - echo LINK_BASE={{.LINK_BASE}}
       - echo LINK={{.LINK}}
       - echo FILE={{.FILE}}
       - echo DIR={{.DIR}}
@@ -315,7 +320,7 @@ tasks:
     dir: /tmp/
     vars:
       REPO: jonas/tig
-      LINK: *common-link
+      LINK: *common-link-base
       FILE: *common-file
       DIR: *common-dir
     cmds:
@@ -371,7 +376,7 @@ tasks:
     dir: /tmp/
     vars:
       REPO: universal-ctags/ctags
-      LINK: *common-link
+      LINK: *common-link-base
       FILE: *common-file
       DIR: *common-dir
     cmds:
