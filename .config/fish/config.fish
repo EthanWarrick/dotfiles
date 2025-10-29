@@ -27,4 +27,19 @@ if status is-interactive
     export MANPAGER="sh -c 'col -bx | bat -l man -p --paging=always'"
   end
 
+  # ----------------------- Aliases ----------------------
+  if command -q eza
+    alias eza="eza --color=always --icons=auto --smart-group"
+    alias l="eza"
+    alias ll="eza -al"
+    alias LL="eza -al --total-size"
+    alias la="eza -a"
+    alias tree="eza -aTL2"
+  else
+    alias ll="ls -alF"
+    alias la="ls -A"
+    alias l="ls -CF"
+  end
+  # ------------------------------------------------------
+
 end
