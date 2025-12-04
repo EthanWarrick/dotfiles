@@ -13,24 +13,21 @@ gui:
     selectedLineBgColor:
       - '#1a0d91'
   skipRewordInEditorWarning: true # for skipping the confirmation before launching the reword editor
-
+  useHunkModeInStagingView: false
 git:
   log:
     # displays the whole git graph by default in the commits panel (equivalent to passing the `--all` argument to `git log`)
     showWholeGraph: false
-  paging:
-    colorArg: always
-    pager: delta --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+  pagers:
+    - colorArg: always
+      pager: delta --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
   autoForwardBranches: none # Stops main/master branches from getting auto fast-forwarded
-
 keybinding:
   commits:
     moveDownCommit: '<c-d>' # move commit down one
     moveUpCommit: '<c-u>' # move commit up one
     openLogMenu: '<c-n>' # open log menu
-
 promptToReturnFromSubprocess: false # display confirmation when subprocess terminates
-
 customCommands:
   - key: '<c-a>'
     description: 'Create patch file for selected commit'
