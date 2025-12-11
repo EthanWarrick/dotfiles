@@ -32,7 +32,7 @@ customCommands:
   - key: '<c-a>'
     description: 'Create patch file for selected commit'
     context: 'commits,subCommits'
-    command: 'git format-patch -1 {{.SelectedCommit.Sha}}'
+    command: "git format-patch {{.SelectedCommitRange.From}}^..{{.SelectedCommitRange.To}}"
     output: log
   - key: '<c-p>'
     description: 'Push stack from selected commit to Gerrit'
@@ -50,7 +50,11 @@ customCommands:
   - key: '<c-x>'
     description: 'Adds a Signed-off-by line to selected commit'
     context: 'commits'
-    command: 'git commit --no-edit --signoff --fixup=reword:{{.SelectedCommit.Sha}} && GIT_SEQUENCE_EDITOR="cat > /dev/null" git rebase --interactive --autostash --keep-empty --rebase-merges --autosquash {{.SelectedCommit.Sha}}^'
+    # command: 'git commit --no-edit --signoff --fixup=reword:{{.SelectedCommit.Sha}} && GIT_SEQUENCE_EDITOR="cat > /dev/null" git rebase --interactive --autostash --keep-empty --rebase-merges --autosquash {{.SelectedCommit.Sha}}^'
+    command: >-
+      GIT_SEQUENCE_EDITOR='sed -i "/^pick '"$(git rev-parse --short {{.SelectedCommitRange.From}})"'/,/^pick '"$(git rev-parse --short {{.SelectedCommitRange.To}})"'/s/^pick /reword /"'
+      GIT_EDITOR='git interpret-trailers --in-place --trailer "Signed-off-by: $(git config user.name) <$(git config user.email)>"'
+      git rebase -i --autostash --keep-empty --rebase-merges {{.SelectedCommitRange.From}}^
     output: log
   - key: '<c-/>'
     description: 'Run Taskfile task'
